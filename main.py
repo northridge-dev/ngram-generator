@@ -1,30 +1,33 @@
-from model import NgramLM
+from model import NgramModel
+
+def load_training_data():
+    """
+    Load multiple training text files and combine them into a single string.
+    """
+    files = ['train/great_gatsby.txt', 'train/pride_and_prejudice.txt', 'train/sherlock_holmes.txt']
+    text = ""
+    for file in files:
+        with open(file, 'r', encoding='utf-8') as f:
+            text += f.read().replace('\n', ' ')
+    return text
 
 def main():
-    # set n-gram size
-    n = 3
+    # Load training data
+    text = load_training_data()
 
-    # choose texts to include in training
-    gatsby = True
-    pride_prejudice = False
-    sherlock = False
+    # Choose n-gram size and train model
+    n = 4  # Use a 4-gram model for better context
+    model = NgramModel(n)
+    print("Training model...")
+    model.train(text)
 
-    # build corpus list
-    training_corpus = []
-    if gatsby:
-        training_corpus.append('./train/great_gatsby.txt')
-    if pride_prejudice:
-        training_corpus.append('./train/pride_and_prejudice.txt')
-    if sherlock:
-        training_corpus.append('./train/sherlock_holmes.txt')
+    # Generate text with different seeds
+    seed_texts = ["the party was", "she looked at", "mr gatsby said", "it was a dark"]
+    for seed in seed_texts:
+        print(f"\nSeed: '{seed}'")
+        generated_text = model.generate_text(seed, max_words=30, temperature=0.7)
+        print(f"Generated Text: {generated_text}")
+        print("-" * 50)
 
-
-    model = NgramLM(n)
-    for path in training_corpus:
-        with open(path, 'r') as f:
-            text = f.read()
-        print(f'Training on {path}')
-        model.train(text)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
