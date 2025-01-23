@@ -5,7 +5,8 @@ from nltk.data import find
 try:
     find('tokenizers/punkt')
 except LookupError:
-    download('punkt')
+    download('punkt_tab')
+download('punkt_tab')
 
 
 def has_alphabetic(word):
@@ -22,7 +23,9 @@ def sentence_tokenizer(text):
     NOTE: replaces "smart" quotations, apostrophes to more accurately
     split sentences
     """
-    pass
+    return tokenize.sent_tokenize(text.replace("“", '"').replace("’", "'").replace("”", '"').replace("‘", "'"))
+
+t = sentence_tokenizer("Hello. I am here now. Remy smells like Patrick making a wheel of indecipherable cheese with a rat’s tail! Does he really?")
 
 
 def word_tokenizer(sentence):
