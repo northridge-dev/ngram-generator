@@ -1,12 +1,17 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from collections import defaultdict, Counter
 import random
 import re
+import os
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = './train'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Load training data
-training_corpus = ['../train/great_gatsby.txt', '../train/pride_and_prejudice.txt', '../train/sherlock_holmes.txt', '../train/tale_of_two_cites.txt']
+training_corpus = []
+with open('training_files.txt', 'r') as file:
+    training_corpus = [line.strip() for line in file if line.strip()]
 text = ""
 for path in training_corpus:
     with open(path, 'r') as f:
@@ -55,7 +60,7 @@ class NgramModel:
         elif self.lower_order_model:
             return self.lower_order_model.predict_next(context[1:])
         else:
-            return random.choice(['the', 'a', 'an', 'is', 'was', 'Diddy'])
+            return random.choice(['the', 'a', 'an', 'is', 'was'])
 
 sentences = sentence_tokenizer(text)
 tokenized_sentences = [word_tokenizer(sentence) for sentence in sentences]
@@ -71,6 +76,23 @@ def generate():
     seed = request.form['seed']
     generated_text = model.generate(seed)
     return render_template('index.html', generated_text=generated_text)
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        uploaded_file = request.files['file']
+        if uploaded_file.filename != '':
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+            uploaded_file.save(file_path)
+            with open(file_path, 'r') as f:
+                new_text = f.read()
+            global text, model
+            text += new_text
+            sentences = sentence_tokenizer(new_text)
+            tokenized_sentences = [word_tokenizer(sentence) for sentence in sentences]
+            model.train(tokenized_sentences)
+        return render_template('index.html', generated_text='File uploaded and processed successfully.')
+    return render_template('upload.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
