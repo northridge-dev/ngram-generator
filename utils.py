@@ -6,7 +6,7 @@ try:
     find('tokenizers/punkt')
 except LookupError:
     download('punkt_tab')
-download('punkt_tab')
+# download('punkt_tab')
 
 
 def has_alphabetic(word):
@@ -25,7 +25,7 @@ def sentence_tokenizer(text):
     """
     return tokenize.sent_tokenize(text.replace("“", '"').replace("’", "'").replace("”", '"').replace("‘", "'"))
 
-t = sentence_tokenizer("Hello. I am here now. Remy smells like Patrick making a wheel of indecipherable cheese with a rat’s tail! Does he really?")
+t = "Hello. I am here now. Remy smells like Patrick making a wheel of indecipherable cheese with a rat’s tail! Does he really?"
 
 
 def word_tokenizer(sentence):
@@ -33,7 +33,9 @@ def word_tokenizer(sentence):
     Strip punctuation, lowercase, and split a sentence 
     into words; return words in a list.
     """
-    pass
+    words = tokenize.word_tokenize(sentence)
+    return [word.lower() for word in words if has_alphabetic(word)]
+# [el.lower() for el in sentence if el.isalpha()]
 
 
 def build_ngrams(tokens, n):
@@ -53,7 +55,15 @@ def build_ngrams(tokens, n):
         ('mat', '</s>', '</s>'),
     ]
     """
-    pass
+    for _ in range(n-1):
+        tokens.append('</s>')
+        tokens.insert(0, '<s>')
+
+    sequences = []
+    for i in range(n):
+        sequences.append(tokens[i:])
+        
+    return zip(*sequences)
 
 
 def ngram_generator(text, n):

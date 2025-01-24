@@ -8,6 +8,8 @@ def main():
     gatsby = True
     pride_prejudice = False
     sherlock = False
+    totc = True
+    other = True
 
     # build corpus list
     training_corpus = []
@@ -17,6 +19,10 @@ def main():
         training_corpus.append('./train/pride_and_prejudice.txt')
     if sherlock:
         training_corpus.append('./train/sherlock_holmes.txt')
+    if totc:
+        training_corpus.append('./train/tale_of_two_cities.txt')
+    if other:
+        training_corpus.append('./train/other.txt')
 
 
     model = NgramLM(n)
