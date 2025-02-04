@@ -63,6 +63,9 @@ def word_tokenizer(sentence):
 
 
 def build_ngrams(tokens, n):
+    """
+    This makes all the ngrams 
+    """
     ngrams = []
     for i in range(len(tokens)+n-1):
         onegram = ()

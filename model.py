@@ -1,4 +1,5 @@
 from utils import *
+import random
 
 class TokenNode:
     """
@@ -28,32 +29,26 @@ class NgramLM:
         self.n = n
         self.root = TokenNode('')
 
-    def train(self, corpus):
-        ngrams = ngram_generator(corpus, 3)
+    def train(self, corpus, n):
+        # makes a list of all the ngrams
+        ngrams = ngram_generator(corpus, n)
         return ngrams
         #print(ngrams[:10])
 
     # puts next word in the list
     def add_ngram(self, ngrams):
-        counter = 0
-        most_common = []
-        for i in ngrams:
-            most_common.append(1)
-        for i in ngrams:
-            for n in ngrams:
-                if i == n:
-                    most_common[counter] += 1
-            counter += 1
-        num = max(most_common)
-        most_common = most_common.index(num)
-        return ngrams[most_common]
+        ngram = random.choice(ngrams)
+        if ngram == '</s>':
+            ngram = '.'
+        return ngram
                     
     # finds possible words 
-    def generate(self, words, ngrams=None):
+    def generate(self, words, ngrams, n):
         count = 0
+        print(words, n)
         list_of_next = []
         for gram in ngrams:
-            if words == gram[:2] and gram[2] != '</s>':
+            if words == gram[:(n-1)]:
                 count += 1
-                list_of_next.append(gram[2])
+                list_of_next.append(gram[(n-1)])
         return list_of_next
