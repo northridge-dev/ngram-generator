@@ -45,7 +45,6 @@ class NgramLM:
     # finds possible words 
     def generate(self, words, ngrams, n):
         count = 0
-        print(words, n)
         list_of_next = []
         for gram in ngrams:
             if words == gram[:(n-1)]:
