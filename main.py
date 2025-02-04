@@ -15,7 +15,7 @@ def ask():
 
 def main():
     # set n-gram size
-    n = 2
+    n = 4
 
     # choose texts to include in training
     gatsby = False
