@@ -1,34 +1,58 @@
 import os
+import random
 
 with open("train/great_gatsby.txt", "r") as file:
     text = file.read()
 
+print('\n\nwe doin n-grams now boyyy\n')
+grammy = input("Enter a word/phrase\n-> ")
+grammy_list = grammy.split(' ')
+n = len(grammy_list)
 
-def train_trigrams(text):
-    global trigram_list
+def train_ngrams(text):
+    global ngram_list
+    global n
+    global wordlist
 
     wordlist = text.replace('\n', ' ').split(' ')
-    trigram_list = []
-    for i in range(len(wordlist) - 2):
-        one_trigram = [wordlist[i],wordlist[i+1],wordlist[i+2]]
-        trigram_list.append(one_trigram)
+    ngram_list = []
+    for i in range(len(wordlist) - n):
+        one_ngram = []
+        for g in range(n):
+            one_ngram.append(wordlist[i+g])
+        ngram_list.append(one_ngram)
 
-    return trigram_list
+    return ngram_list
 
-train_trigrams(text)
+train_ngrams(text)
+sentence_list = []
 
-print('\n\n\n\nwe doin trigrams now boyyy\n')
-word1 = input("Enter first word   ->")
-word2 = input("Enter second word   ->")
+for l in range(len(grammy_list)):
+    sentence_list.append(grammy_list[l])
 
-final_list = []
+for p in range(100):
+    final_list = []
+    for f in range(len(ngram_list)):
+        similarity = 0
+        for u in range(n):
+            if grammy_list[u] == ngram_list[f][u]:
+                similarity += 1
+        if similarity == n:
+            final_list.append(ngram_list[f+1][n-1])
+    sentence_list.append(random.choice(final_list))
+    grammy_list = [sentence_list[p+1],sentence_list[p+2]]
 
-for i in range(len(trigram_list)):
-    if trigram_list[i][0] == word1:
-        if trigram_list[i][1] == word2:
-            final_list.append(trigram_list[i][2])
 
-os.system('clear')
+sentence = ' '.join(sentence_list)
+print(sentence)
 
-print(final_list)
-        
+def get_frequency():
+    frequency_dict = {}
+    for word in final_list:
+        if word in frequency_dict:
+            frequency_dict[word] += 1
+        else:
+            frequency_dict[word] = 1
+    return frequency_dict
+
+freq_list = get_frequency()
