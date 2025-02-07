@@ -10,8 +10,12 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Load training data
 training_corpus = []
-with open('training_files.txt', 'r') as file:
-    training_corpus = [line.strip() for line in file if line.strip()]
+train_directory = './train'
+
+for root, _, files in os.walk(train_directory):
+    for file in files:
+        if file.endswith('.txt'):
+            training_corpus.append(os.path.join(root, file))
 text = ""
 for path in training_corpus:
     with open(path, 'r') as f:
@@ -76,6 +80,12 @@ def generate():
     seed = request.form['seed']
     generated_text = model.generate(seed)
     return render_template('index.html', generated_text=generated_text)
+
+@app.route('/nrp', methods=['POST'])
+def nrp():
+    return render_template('nrp.html')
+
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
