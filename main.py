@@ -25,6 +25,7 @@ def main():
             text = f.read()
         print(f'Training on {path}')
         model.train(text)
+        print(model.generate(10, "He"))
 
 if __name__ == '__main__':
     main()
