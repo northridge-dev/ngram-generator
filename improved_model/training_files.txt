@@ -1,0 +1,4 @@
+./train/great_gatsby.txt 
+./train/pride_and_prejudice.txt
+./train/sherlock_holmes.txt
+./train/tale_of_two_cites.txt
