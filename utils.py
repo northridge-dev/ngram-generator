@@ -5,7 +5,7 @@ from nltk.data import find
 try:
     find('tokenizers/punkt')
 except LookupError:
-    download('punkt')
+    download('punkt_tab')
 
 
 def has_alphabetic(word):
