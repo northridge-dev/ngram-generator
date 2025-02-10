@@ -17,20 +17,30 @@ def has_alphabetic(word):
 
 
 def sentence_tokenizer(text):
+    import re
     """
-    Split input text into sentences; return them in a list
-    NOTE: replaces "smart" quotations, apostrophes to more accurately
-    split sentences
+    Split input text into sentences; return them in a list.
+    NOTE: Replaces "smart" quotations, apostrophes to more accurately
+    split sentences.
     """
-    pass
+    text = text.replace('“', '"').replace('”', '"')
+    text = text.replace('‘', "'").replace('’', "'")
+    sentences = re.split(r'(?<=[.!?]) +', text)
+    sentences = [sentence.strip() for sentence in sentences]
+    return sentences
 
+
+import string
 
 def word_tokenizer(sentence):
     """
     Strip punctuation, lowercase, and split a sentence 
     into words; return words in a list.
     """
-    pass
+    sentence = sentence.lower()
+    sentence = sentence.translate(str.maketrans('', '', string.punctuation))
+    words = sentence.split()
+    return words
 
 
 def build_ngrams(tokens, n):
@@ -50,7 +60,13 @@ def build_ngrams(tokens, n):
         ('mat', '</s>', '</s>'),
     ]
     """
-    pass
+     # Add <s> at the beginning and </s> at the end of the tokens
+    tokens = ['<s>'] * (n - 1) + tokens + ['</s>'] * (n - 1)
+    
+    # Generate n-grams
+    ngrams = [tuple(tokens[i:i+n]) for i in range(len(tokens) - n + 1)]
+    
+    return ngrams
 
 
 def ngram_generator(text, n):
