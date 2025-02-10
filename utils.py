@@ -65,6 +65,7 @@ def build_ngrams(tokens, n):
         
     return zip(*sequences)
 
+# dev.txt is "other.txt"
 
 def ngram_generator(text, n):
     """
