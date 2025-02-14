@@ -1,3 +1,4 @@
+import random
 class TokenNode:
     """
     A trie node that represents a word in the n-gram model.
@@ -27,10 +28,42 @@ class NgramLM:
         self.root = TokenNode('')
 
     def train(self, corpus):
-        pass
+        tokens = corpus.split()
+        for i in range(len(tokens) - self.n + 1):
+            ngram = tuple(tokens[i : i + self.n])
+            self.add_ngram(ngram)
 
-    def add_ngram(self, ngram, count):
-        pass
+    def add_ngram(self, ngram):
+        node = self.root
+        for word in ngram:
+            if not node.has_child(word):
+                node.add_child(TokenNode(word))
+            node = node.get_child(word)
 
-    def generate(self, length, seed_text=None):
-        pass
+    def generate(self, length, seed_text):
+        if seed_text is None:
+            seed_text = random.choice(list(self.root.children.keys()))
+        
+        generated_tokens = seed_text.split()
+        
+        for _ in range(length):
+            prev_tokens = tuple(generated_tokens[-(self.n - 1):])
+            node = self.root
+            for word in prev_tokens:
+                if node.has_child(word):
+                    node = node.get_child(word)
+            
+            if not node.children:
+                break
+            
+            next_word = random.choices(
+                list(node.children.keys())
+            )[0]
+
+            if not"Mrs."in next_word and not"Mr."in next_word and not"Dr."in next_word and '.' in next_word:
+                generated_tokens.append(next_word)
+                break
+
+            generated_tokens.append(next_word)
+        
+        return generated_tokens
